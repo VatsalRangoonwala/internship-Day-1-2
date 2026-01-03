@@ -1,0 +1,80 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f2f2f2;
+}
+
+/* Form container */
+.container {
+  width: 420px;
+  margin: 50px auto;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+h2, h4 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label + input wrapper */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Inputs */
+.form-group input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Radio buttons */
+.radio-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.success {
+  color: green;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Error message */
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+
+/* Button */
+.btn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #157ae6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
