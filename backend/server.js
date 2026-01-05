@@ -13,9 +13,14 @@ const app = express();
 app.use(express.json());
 app.use(
   session({
-    secret: "captcha_secret_key",
+    name: "auth.sid",
+    secret: "secret_key",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: 30 * 60 * 1000 // 30 minutes
+    }
   })
 );
 app.use(

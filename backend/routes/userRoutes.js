@@ -39,63 +39,65 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not registered"
-      });
-    }
+    if (!user)
+      return res.status(404).json({ message: "User not registered" });
 
-    if (user.password !== password) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid password"
-      });
-    }
+    if (user.password !== password)
+      return res.status(401).json({ message: "Invalid password" });
 
-    res.status(200).json({
+    // ✅ STORE USER IN SESSION
+    req.session.userId = user._id;
+
+    res.json({
       success: true,
-      message: "Login successful",
-      user
+      message: "Login successful"
     });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
+
+// Get user by ID
+router.get("/me", async (req, res) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Not logged in" });
+    }
+
+    const user = await User.findById(req.session.userId);
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Update user profile
-router.put("/update/:id", async (req, res) => {
+router.put("/update", async (req, res) => {
   try {
-    const userId = req.params.id;
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Not logged in" });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        gender: req.body.gender,
-        contact: req.body.contact
-      },
-      { new: true } // return updated data
+      req.session.userId,
+      req.body,
+      { new: true }
     );
 
-    res.status(200).json({
-      success: true,
+    res.json({
       message: "Profile updated successfully",
       user: updatedUser
     });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Update failed"
-    });
+  } catch (err) {
+    res.status(500).json({ message: "Update failed" });
   }
 });
 
+router.post("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.json({ message: "Logged out" });
+  });
+});
 
 module.exports = router;

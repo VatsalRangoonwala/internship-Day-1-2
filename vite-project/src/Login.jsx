@@ -1,40 +1,35 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   const [loginData, setLoginData] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
-
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const res = await axios.post(
-      "http://localhost:5000/api/users/login",
-      loginData
-    );
+    try {
+      await axios.post("http://localhost:5000/api/users/login", loginData, {
+        withCredentials: true,
+      });
 
-    // ✅ Navigate to dashboard with user data
-    navigate("/dashboard", { state: { user: res.data.user } });
-
-  } catch (error) {
-    setMessage(error.response?.data?.message || "Login failed");
-    setIsSuccess(false);
-  }
-};
+      navigate("/dashboard");
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Login failed");
+      setIsSuccess(false);
+    }
+  };
 
   return (
     <div className="container">
@@ -64,12 +59,15 @@ function Login() {
         </div>
 
         {message && (
-          <span className={isSuccess ? "success" : "error"}>
-            {message}
-          </span>
+          <span className={isSuccess ? "success" : "error"}>{message}</span>
         )}
 
-        <button type="submit" className="btn">Login</button>
+        <button type="submit" className="btn">
+          Login
+        </button>
+        <p style={{ textAlign: "center" }}>
+          New to our page? <Link to="/">Register</Link>
+        </p>
       </form>
     </div>
   );

@@ -1,19 +1,33 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
-  const location = useLocation();
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const user = location.state?.user;
+  useEffect(() => {
+  axios
+    .get("http://localhost:5000/api/users/me", {
+      withCredentials: true
+    })
+    .then(res => setUser(res.data.user))
+    .catch(() => navigate("/login"));
+}, []);
 
-  // If user refreshes page or opens directly
+const handleLogout = async () => {
+    await axios.post(
+      "http://localhost:5000/api/users/logout",
+      {},
+      { withCredentials: true }
+    );
+    navigate("/login");
+  };
+
   if (!user) {
     return (
       <div className="container">
-        <h2>Access Denied</h2>
-        <button className="btn" onClick={() => navigate("/login")}>
-          Go to Login
-        </button>
+        <h2>Loading...</h2>
       </div>
     );
   }
@@ -22,36 +36,25 @@ function Dashboard() {
     <div className="container">
       <h2>Dashboard</h2>
 
-      <div>
-        <strong>First Name:</strong> {user.firstName}
-      </div>
+      <p><strong>First Name:</strong> {user.firstName}</p>
+      <p><strong>Last Name:</strong> {user.lastName}</p>
+      <p><strong>Email:</strong> {user.email}</p>
+      <p><strong>Gender:</strong> {user.gender}</p>
+      <p><strong>Contact:</strong> {user.contact}</p>
 
-      <div >
-        <strong>Last Name:</strong> {user.lastName}
-      </div>
-
-      <div >
-        <strong>Email:</strong> {user.email}
-      </div>
-
-      <div >
-        <strong>Gender:</strong> {user.gender}
-      </div>
-
-      <div >
-        <strong>Contact:</strong> {user.contact}
-      </div>
-
-      <button className="btn" onClick={() => navigate("/login")}>
-        Logout
-      </button>
-
-      &nbsp;&nbsp;&nbsp;&nbsp;
       <button
         className="btn"
-        onClick={() => navigate("/update-profile", { state: { user } })}
+        onClick={() => navigate("/update-profile")}
       >
         Update Profile
+      </button>
+
+      <button
+        className="btn"
+        onClick={handleLogout}
+        style={{ marginLeft: "10px" }}
+      >
+        Logout
       </button>
     </div>
   );
