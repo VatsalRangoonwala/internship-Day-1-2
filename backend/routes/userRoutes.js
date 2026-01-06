@@ -45,7 +45,7 @@ router.post("/login", async (req, res) => {
     if (user.password !== password)
       return res.status(401).json({ message: "Invalid password" });
 
-    // ✅ STORE USER IN SESSION
+    // STORE USER IN SESSION
     req.session.userId = user._id;
 
     res.json({

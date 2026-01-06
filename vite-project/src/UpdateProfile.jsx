@@ -5,9 +5,6 @@ import { useNavigate } from "react-router-dom";
 function UpdateProfile() {
   const navigate = useNavigate();
 
-  const userId = localStorage.getItem("userId");
-  console.log(userId);
-
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -34,7 +31,7 @@ function UpdateProfile() {
         setLoading(false);
       })
       .catch(() => {
-        // ❌ Not logged in
+        // Not logged in
         navigate("/login");
       });
   }, []);
